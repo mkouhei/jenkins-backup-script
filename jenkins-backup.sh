@@ -24,20 +24,25 @@ if [[ -f "$TMP_DIR/$TMP_TAR_NAME" ]]; then
 fi
 rm -rf "$ARC_DIR"
 mkdir -p "$ARC_DIR/"{plugins,jobs,users}
-
+ 
 cp "$JENKINS_HOME/"*.xml "$ARC_DIR"
 cp "$JENKINS_HOME/plugins/"*.jpi "$ARC_DIR/plugins"
 cp -R "$JENKINS_HOME/users/"* "$ARC_DIR/users"
-
+ 
 cd "$JENKINS_HOME/jobs/"
 ls -1 | while read job_name
 do
   mkdir -p "$ARC_DIR/jobs/$job_name/"
   cp "$JENKINS_HOME/jobs/$job_name/"*.xml "$ARC_DIR/jobs/$job_name/"
 done
-
+ 
 cd "$CUR_DIR"
+if [ "$DIST_FILE" = "-" ];
+then
+tar -czf - "$TMP_DIR/$ARC_NAME/"*
+else
 tar -czvf "$TMP_DIR/$TMP_TAR_NAME" "$TMP_DIR/$ARC_NAME/"*
 cp "$TMP_DIR/$TMP_TAR_NAME" "$DIST_FILE"
+fi
 
 exit 0
